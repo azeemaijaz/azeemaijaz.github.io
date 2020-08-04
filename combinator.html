@@ -1,0 +1,103 @@
+<!DOCTYPE html> 
+<html> 
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word Combination Generator</title>
+<style> 
+body {
+  font-family: Calibri, Helvetica, sans-serif;
+}
+button { 
+       background-color: #4CAF50; 
+       width: 100%;
+        color: white; 
+        padding: 15px; 
+        margin: 10px 0px; 
+        border: none; 
+        cursor: pointer; 
+         } 
+ form { 
+        border: 3px solid #f1f1f1; 
+    } 
+ input[type=text] { 
+        width: 100%; 
+        margin: 8px 0;
+        padding: 12px 20px; 
+        display: inline-block; 
+        border: 2px solid green; 
+        box-sizing: border-box; 
+    }
+ button:hover { 
+        opacity: 0.7; 
+    }  
+   
+ .container { 
+        padding: 25px; 
+        background-color: lightblue;
+    } 
+</style> 
+</head>  
+<body>  
+    <center> <h1>Word Combination Generator</h1> </center> 
+    <form>
+        <div class="container"> 
+            <label>Enter String : </label> 
+            <input type="text" id="string" placeholder="Enter String" required>
+            <button type="button" onclick="generate(string.value)" >Generate All Possible combinations</button>           
+        </div> 
+        <div style="padding: 25px;" id="result" ></div>
+    </form>
+    <script>
+    	
+function generate($this){
+  if($this.length <= 0) return;
+  let res = document.querySelector("#result");
+  res.innerHTML = "";
+  let combinations = getcombinations($this);
+  res.innerHTML += `There are ${combinations.length} possible combinations of the word "${$this}" : `
+  res.innerHTML += `<ul>`
+	 combinations.forEach(item =>{ 
+	res.innerHTML += `<li>${item}</li>`
+	})
+	res.innerHTML += `</ul>`
+  }
+  
+  
+function swap(chars, i, j) {
+    var tmp = chars[i];
+    chars[i] = chars[j];
+    chars[j] = tmp;
+}
+
+function getcombinations(input) {
+    var counter = [],
+        combinations = [],
+        chars = input.split(''),
+        length = chars.length,
+        i;
+
+    for (i = 0; i < length; i++) {
+        counter[i] = 0;
+    }
+
+    combinations.push(input);
+    i = 0;
+    while (i < length) {
+        if (counter[i] < i) {
+            swap(chars, i % 2 === 1 ? counter[i] : 0, i);
+            counter[i]++;
+            i = 0;
+            combinations.push(chars.join(''));
+        } else {
+            counter[i] = 0;
+            i++;
+        }
+    }
+
+    return combinations;
+}
+
+
+</script>
+</body>   
+</html>
