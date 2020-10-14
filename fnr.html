@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Find And Replace</title>
+		<style>
+			* {
+				font-family: Sans-Serif;
+				box-sizing: border-box;
+			}
+
+			body {
+				padding: 1em 10%;
+			}
+
+			textarea,
+			input[type="text"] {
+				font-family: monospace;
+			}
+
+			textarea {
+				border-radius: 5px;
+				width: 100%;
+				padding: 1em;
+			}
+
+			.config {
+				width: 100%;
+				border-radius: 5px;
+				border: 1px solid #888888;
+				padding: 1em;
+				display: inline-block;
+				color: #888888;
+			}
+		</style>
+	</head>
+	<body>
+		<p>
+			Original text:<br />
+			<textarea id="original" rows="4" cols="50"></textarea>
+		</p>
+
+		<p>
+			Items to find:<br />
+			<textarea id="find" rows="4" cols="50">
+item1
+item2
+item3</textarea
+			>
+		</p>
+
+		<p>
+			Items to replace:<br />
+			<textarea id="replace" rows="4" cols="50">
+replace1
+replace2
+replace3</textarea
+			>
+		</p>
+
+		<p class="config">
+			<b>Configuration:</b><br /><br />
+			- Items separated by
+			<input id="separatedBy" type="text" value="\n" size="3" /> (Regex)<br />
+			- <input id="useRegex" type="checkbox" /> Use Regex in each item<br />
+			- <input id="caseSensitive" type="checkbox" checked /> Use case sensitive
+		</p>
+
+		<p>
+			<input type="button" value="Replace" onclick="replace()" />
+		</p>
+
+		<p>
+			Result:<br />
+			<textarea id="result" rows="4" cols="50"></textarea>
+		</p>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script>
+			window.onload = function () {
+				$("textarea,input[type='text']").focus(function () {
+					$(this).select();
+				});
+			};
+
+			function replace() {
+				// Get Configuration
+				let separatedBy = new RegExp($("#separatedBy").val());
+				let useRegex = $("#useRegex").prop("checked");
+				let isCaseSensitive = $("#caseSensitive").prop("checked") ? "" : "i";
+
+				// Get 'Find' and 'Replace'
+				let find = $("#find").val().split(separatedBy);
+				let replace = $("#replace").val().split(separatedBy);
+
+				// Make result equal origin
+				$("#result").val($("#original").val());
+
+				// Run in each 'find' item
+				for (i = 0; i < find.length; i++) {
+					// check if not use Regex to escape the regex
+					find[i] = useRegex
+						? find[i]
+						: find[i].replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+
+					// Replace
+					$("#result").val(
+						$("#result")
+							.val()
+							.replace(new RegExp(find[i], "g" + isCaseSensitive), replace[i])
+					);
+				}
+			}
+		</script>
+	</body>
+</html>
